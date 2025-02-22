@@ -17,5 +17,6 @@ namespace ProiectMedii.Data
         public DbSet<ProiectMedii.Models.Clasa_model> Clasa_model { get; set; } = default!;
         public DbSet<ProiectMedii.Models.Brand> Brand { get; set; } = default!;
         public DbSet<Agent> Agent { get; set; } = default!;
+        public DbSet<ProiectMedii.Models.Categorie> Categorie { get; set; } = default!;
     }
 }

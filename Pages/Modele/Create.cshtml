@@ -20,7 +20,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Clasa_model.AgentID" class="control-label">Agent</label>
-                <select asp-for="Clasa_model.AgentID" class="form-control" asp-items="ViewBag.AgentID">
+                <select asp-for="Clasa_model.AgentID" class="form-control" asp-items="@(ViewData["AgentID"] as SelectList)">
                     <option value="">-- Select Agent --</option>
                 </select>
                 <span asp-validation-for="Clasa_model.AgentID" class="text-danger"></span>
@@ -38,7 +38,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="Clasa_model.BrandID" class="control-label">Nume Brand</label>
-                <select asp-for="Clasa_model.BrandID" class="form-control" asp-items="ViewBag.BrandID">
+                <select asp-for="Clasa_model.BrandID" class="form-control" asp-items="@(ViewData["BrandID"] as SelectList)">
+                    <option value="">-- Select Brand --</option>
                 </select>
                 <span asp-validation-for="Clasa_model.BrandID" class="text-danger"></span>
             </div>
@@ -53,6 +54,13 @@
 <div>
     <a asp-page="Index">Back to List</a>
 </div>
+@if (ViewData["ModelStateErrors"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ModelStateErrors"]
+    </div>
+}
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

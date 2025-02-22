@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Policy;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,9 +9,9 @@ using Microsoft.EntityFrameworkCore;
 using ProiectMedii.Data;
 using ProiectMedii.Models;
 
-namespace ProiectMedii.Pages.Modele
+namespace ProiectMedii.Pages.Categorii
 {
-    public class EditModel : CategoriiModelPageModel
+    public class EditModel : PageModel
     {
         private readonly ProiectMedii.Data.ProiectMediiContext _context;
 
@@ -22,7 +21,7 @@ namespace ProiectMedii.Pages.Modele
         }
 
         [BindProperty]
-        public Clasa_model Clasa_model { get; set; } = default!;
+        public Categorie Categorie { get; set; } = default!;
 
         public async Task<IActionResult> OnGetAsync(int? id)
         {
@@ -31,13 +30,12 @@ namespace ProiectMedii.Pages.Modele
                 return NotFound();
             }
 
-            var clasa_model =  await _context.Clasa_model.FirstOrDefaultAsync(m => m.ID == id);
-            if (clasa_model == null)
+            var categorie =  await _context.Categorie.FirstOrDefaultAsync(m => m.ID == id);
+            if (categorie == null)
             {
                 return NotFound();
             }
-            Clasa_model = clasa_model;
-            ViewData["BrandID"] = new SelectList(_context.Set<Brand>(), "ID", "NumeBrand");
+            Categorie = categorie;
             return Page();
         }
 
@@ -50,7 +48,7 @@ namespace ProiectMedii.Pages.Modele
                 return Page();
             }
 
-            _context.Attach(Clasa_model).State = EntityState.Modified;
+            _context.Attach(Categorie).State = EntityState.Modified;
 
             try
             {
@@ -58,7 +56,7 @@ namespace ProiectMedii.Pages.Modele
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!Clasa_modelExists(Clasa_model.ID))
+                if (!CategorieExists(Categorie.ID))
                 {
                     return NotFound();
                 }
@@ -71,9 +69,9 @@ namespace ProiectMedii.Pages.Modele
             return RedirectToPage("./Index");
         }
 
-        private bool Clasa_modelExists(int id)
+        private bool CategorieExists(int id)
         {
-            return _context.Clasa_model.Any(e => e.ID == id);
+            return _context.Categorie.Any(e => e.ID == id);
         }
     }
 }

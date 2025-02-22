@@ -9,7 +9,7 @@ namespace ProiectMedii.Models
         public int ID { get; set; }
         public string Model { get; set; }
 
-       
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal Pret { get; set; }
 
         [DataType(DataType.Date)]
@@ -19,6 +19,8 @@ namespace ProiectMedii.Models
 
         public int? AgentID { get; set; }
         public Agent? Agent { get; set; }
+
+        public ICollection<CategorieModel>? CategoriiModel { get; set; }
     }
 }
 

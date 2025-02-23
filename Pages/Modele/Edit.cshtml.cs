@@ -30,46 +30,58 @@ namespace ProiectMedii.Pages.Modele
             {
                 return NotFound();
             }
+            Clasa_model = await _context.Clasa_model
+                 .Include(b => b.Brand)
+                 .Include(b => b.CategoriiModel).ThenInclude(b => b.Categorie)
+                 .AsNoTracking()
+                 .FirstOrDefaultAsync(m => m.ID == id);
 
             var clasa_model =  await _context.Clasa_model.FirstOrDefaultAsync(m => m.ID == id);
             if (clasa_model == null)
             {
                 return NotFound();
             }
+            PopulateAssignedCategoryData(_context, Clasa_model);
             Clasa_model = clasa_model;
             ViewData["BrandID"] = new SelectList(_context.Set<Brand>(), "ID", "NumeBrand");
             return Page();
         }
 
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more information, see https://aka.ms/RazorPagesCRUD.
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int? id, string[]
+selectedCategories)
         {
-            if (!ModelState.IsValid)
+            if (id == null)
             {
-                return Page();
+                return NotFound();
             }
 
-            _context.Attach(Clasa_model).State = EntityState.Modified;
-
-            try
+            var modelToUpdate = await _context.Clasa_model
+            .Include(i => i.Brand)
+            .Include(i => i.CategoriiModel)
+            .ThenInclude(i => i.Categorie)
+            .FirstOrDefaultAsync(s => s.ID == id);
+            if (modelToUpdate == null)
             {
+                return NotFound();
+            }
+
+            if (await TryUpdateModelAsync<Clasa_model>(
+            modelToUpdate,
+            "Clasa_model",
+            i => i.Model, i => i.Agent,
+            i => i.Pret, i => i.DataPublicarii, i => i.BrandID))
+            {
+                UpdateModelCategories(_context, selectedCategories, modelToUpdate);
                 await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!Clasa_modelExists(Clasa_model.ID))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                return RedirectToPage("./Index");
             }
 
-            return RedirectToPage("./Index");
+            UpdateModelCategories(_context, selectedCategories, modelToUpdate);
+            PopulateAssignedCategoryData(_context, modelToUpdate);
+            return Page();
         }
+    
+
 
         private bool Clasa_modelExists(int id)
         {

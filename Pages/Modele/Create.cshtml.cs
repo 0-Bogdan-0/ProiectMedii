@@ -11,7 +11,7 @@ using ProiectMedii.Models;
 
 namespace ProiectMedii.Pages.Modele
 {
-    public class CreateModel : PageModel
+    public class CreateModel : CategoriiModelPageModel
     {
         private readonly ProiectMedii.Data.ProiectMediiContext _context;
 
@@ -25,7 +25,13 @@ namespace ProiectMedii.Pages.Modele
             ViewData["BrandID"] = new SelectList(_context.Set<Brand>(), "ID", "NumeBrand");
            
             ViewData["AgentID"] = new SelectList(_context.Agent.ToList(), "ID", "Nume");
+
+            var model = new Clasa_model();
+            model.CategoriiModel = new List<CategorieModel>();
+            PopulateAssignedCategoryData(_context, model);
+
             return Page();
+
         }
 
         [BindProperty]
@@ -34,24 +40,24 @@ namespace ProiectMedii.Pages.Modele
 
 
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(string[] selectedCategories)
         {
-            if (!ModelState.IsValid)
+            var newModel = new Clasa_model();
+            if (selectedCategories != null)
             {
-                var errors = string.Join("; ", ModelState.Values
-                    .SelectMany(v => v.Errors)
-                    .Select(e => e.ErrorMessage));
-
-                System.Diagnostics.Debug.WriteLine("Erori ModelState: " + errors);
-
-                ViewData["ModelStateErrors"] = errors;
-
-                return Page();
+                newModel.CategoriiModel = new List<CategorieModel>();
+                foreach (var cat in selectedCategories)
+                {
+                    var catToAdd = new CategorieModel
+                    {
+                        CategorieID = int.Parse(cat)
+                    };
+                    newModel.CategoriiModel.Add(catToAdd);
+                }
             }
-
+            Clasa_model.CategoriiModel = newModel.CategoriiModel;
             _context.Clasa_model.Add(Clasa_model);
             await _context.SaveChangesAsync();
-
             return RedirectToPage("./Index");
         }
 

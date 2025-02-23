@@ -27,7 +27,7 @@ namespace ProiectMedii.Models
         {
             if (selectedCategories == null)
             {
-                ModelToUpdate.CategoriiModel = new List<CategorieModel>();
+                modelToUpdate.CategoriiModel = new List<CategorieModel>();
                 return;
             }
             var selectedCategoriesHS = new HashSet<string>(selectedCategories);
@@ -51,13 +51,14 @@ namespace ProiectMedii.Models
                 {
                     if (categoriiModel.Contains(cat.ID))
                     {
-                        CategorieModel bookToRemove
+                        CategorieModel modelToRemove
                         = modelToUpdate
                         .CategoriiModel
                        .SingleOrDefault(i => i.CategorieID == cat.ID);
-                        context.Remove(ModelToRemove);
+                        context.Remove(modelToRemove);
                     }
                 }
             }
         }
     }
+}
